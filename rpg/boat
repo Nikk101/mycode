@@ -1,0 +1,150 @@
+#!/usr/bin/python3
+
+# Replace RPG starter project with this code when new instructions are live
+
+def showInstructions():
+  #print a main menu and the commands
+  print('''
+Happy Fun Murder Party
+
+There's been a murder on the ship, and as the captian of this ship it's your job to find the murderer.
+
+======================================================================================================
+
+Commands:
+  go [direction]
+  invesigate [person, or room]
+  review [alibis]
+  ''')
+
+def showStatus():
+  #print the player's current status
+  print("\n"'---------------------------------------'"\n")
+  print('You are on the ' + currentRoom)
+  #print the current inventory
+  print("\n"'alibis : ' + str(alibis))
+  print("\n"'rooms : ' + str(room_discriptions))
+  #print an item if there is one
+  if "clue" in rooms[currentRoom]:
+    print("\n"'You see ' + rooms[currentRoom]['clue'])
+  print("\n""----------------------------------------""\n")
+
+#an inventory, which is initially empty
+alibis = []
+room_discriptions = []
+
+#a dictionary linking a room to other rooms
+## A dictionary linking a room to other rooms
+
+alibi_dict= {"chad": "It couldn't have been me! I was in the cabin!",
+             "chelsea": "lol",
+             "dead body": "Hey, yo, im dead.",
+             "bill": "lol",
+             "frank": "lol",
+             "the bridge": "go east or west",
+             "travis": "It couldn't have been me! I'm the one who made this game!"}
+
+rooms = {
+
+            'The Bridge' : {
+                  'west' : 'Port side, outside of The Bridge',
+                  'east'  : 'Starboard side, outside of The Bridge',
+                  'room' : 'the bridge',
+                  'clue'  : 'chad',
+                },
+            'The Quarterdeck' : {
+                  'east' : 'Starboard side, outside of The Quarterdeck',
+                  'clue' : 'dead body',
+                  'west' : 'Port side, outside of The Quarterdeck',
+                },
+            'Bow' : {
+                  'west' : 'Port side, outside of The Bridge',
+                  'east'  : 'Starboard side, outside of The Bridge',
+                 },  
+            'Port side, outside of The Bridge' : {
+                  'north' : 'Bow',
+                  'south' : 'Port side, outside of The Quarterdeck',
+                  'east' : 'The Bridge',
+                  'clue'  : 'travis',
+                },
+            'Starboard side, outside of The Bridge' : {
+                  'west' : 'Hall',
+                  'south': 'Starboard side, outside of The Quarterdeck',
+                  'clue' : 'bill',
+                  'north' : 'Bow',
+               },
+            'Port side, outside of The Quarterdeck' : {
+                  'north' : 'Port side, outside of The Bridge',
+                  'south' : 'Aft',
+                  'east' : 'The Quarterdeck',
+               },
+            'Starboard side, outside of The Quarterdeck' : {
+                  'north' : 'Starboard side, outside of The Bridge',
+                  'south' : 'Aft',
+                  'west' : 'The Quarterdeck',
+                  },   
+            'Aft' : {
+                  'west' : 'Port side, outside of The Quarterdeck',
+                  'east' : 'Starboard side, outside of The Quarterdeck',
+                  'clue' : 'frank',
+            }
+         }
+
+#start the player in the Hall
+currentRoom = 'The Bridge'
+
+showInstructions()
+
+#loop forever
+while True:
+
+  showStatus()
+
+  #get the player's next 'move'
+  #.split() breaks it up into an list array
+  #eg typing 'go east' would give the list:
+  #['go','east']
+  move = ''
+  while move == '':
+    move = input('>')
+
+  # split allows an items to have a space on them
+  # get golden key is returned ["get", "golden key"]          
+  move = move.lower().split(" ", 1)
+
+  #if they type 'go' first
+  if move[0] == 'go':
+    #check that they are allowed wherever they want to go
+    if move[1] in rooms[currentRoom]:
+      #set the current room to the new room
+      currentRoom = rooms[currentRoom][move[1]]
+    #there is no door (link) to the new room
+    else:
+        print('You can\'t go that way!')
+  #review looks into directory for alibis
+  if move[0] == 'review' :
+    if move[1] in alibis or room_discriptions:
+      print(alibi_dict[move[1]])
+  #if they type 'get' first
+  if move[0] == 'investigate' :
+    #if the room contains an item, and the item is the one they want to get
+    if "clue" in rooms[currentRoom] and move[1] in rooms[currentRoom]['clue']:
+      #add the item to their inventory
+      alibis += [move[1]]
+      #display a helpful message
+      print(move[1] + ' gave his alibi.')
+      #delete the item from the room
+      del rooms[currentRoom]['clue']
+
+  
+  if move[0] == 'investigate' :
+    if "room" in rooms[currentRoom] and move[1] in rooms[currentRoom]['room']:
+      room_discriptions += [move[1]]
+      print(move[1] + ' was investigated!')
+      del rooms[currentRoom]['room']
+
+  ## Define how a player can win
+  if currentRoom == 'Aft' and 'key' in alibis and 'potion' in alibis:
+    print('You escaped the house with the ultra rare key and magic potion... YOU WIN!')
+    break
+
