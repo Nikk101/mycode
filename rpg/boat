@@ -1,20 +1,25 @@
 #!/usr/bin/python3
 
-# Replace RPG starter project with this code when new instructions are live
+import os
+  
+os.system('echo "Happy Fun Murder Party!" | figlet')
 
 def showInstructions():
   #print a main menu and the commands
   print('''
-Happy Fun Murder Party
 
-There's been a murder on the ship, and as the captian of this ship it's your job to find the murderer.
+Your the Captian of the S.S. Anne. Today you picked up six people to take on a deep sea fishing
+expedition. The trip seemed fine so far, but shortly after ringing the bell to signal that it was noon,
+Chad came busting through the port side door to the Bridge. "Captian you must come quick there's a dead body on
+the Quarterdeck cabin."
 
 ======================================================================================================
 
 Commands:
   go [direction]
-  invesigate [person, or room]
-  review [alibis]
+  investigate [person, or room]
+  review [alibis, or rooms]
+  radio [guess the killer]
   ''')
 
 def showStatus():
@@ -23,7 +28,7 @@ def showStatus():
   print('You are on the ' + currentRoom)
   #print the current inventory
   print("\n"'alibis : ' + str(alibis))
-  print("\n"'rooms : ' + str(room_discriptions))
+  print('rooms : ' + str(room_discriptions))
   #print an item if there is one
   if "clue" in rooms[currentRoom]:
     print("\n"'You see ' + rooms[currentRoom]['clue'])
@@ -36,62 +41,84 @@ room_discriptions = []
 #a dictionary linking a room to other rooms
 ## A dictionary linking a room to other rooms
 
-alibi_dict= {"chad": "It couldn't have been me! I was in the cabin!",
-             "chelsea": "lol",
-             "dead body": "Hey, yo, im dead.",
-             "bill": "lol",
-             "frank": "lol",
-             "the bridge": "go east or west",
-             "travis": "It couldn't have been me! I'm the one who made this game!"}
+alibi_dict= {"chad": "I went to the cabin to check on Jessica only to find her dead, I would ask justin about what happened to her since he was the one to escort her to the cabin in the first place!",
+             'dan': "I can barely stand, how could I kill anyone. I did see someone pass behind Justin and I as we were shotgunning beers.",
+             'bai' : 'I was smoking a phat J when I saw Chad leave the Quarterdeck from the starboard door. Then again my memory is a bit hazey.',
+             "dead body": "Hey, yo, im dead. Looks like someone smoothered me with a pillow, and part of some masterwork code is on the table.",
+             "justin": 'Jessica and I were drinking on the way out to the fishing spot when she started getting a bit sea sick so I escorted her to the cabin and started drinking with dan.',
+             "nikk": 'I was unaware of anyone being dead till you announced it over the intercomm. I have been writing code on the front of the ship the whole time.',
+             "bridge": "The Bridge contains the radio, along with other martime equipment. Type radio to call the Coast Guard with who you think the killer is. You can go east or west from the Bridge. Chad was also initally found here.",
+             "quarterdeck": "A middleroom connected to the outside and the cabin. You can go north, east or west.",
+             "bow" : "The front of the ship. Nikk was found here. You can go east or west.",
+             'Quarterdeck cabin' : 'A rest area inside the ship. The dead body of Jessica was found here. You can go south.',
+             'Starboard side, outside of the Bridge' : 'You can go north, south, and west. Bai was found here.',
+             'Port side, outside of the Quarterdeck' : 'You can go north, south, and east.',
+             'Starboard side, outside of the Quarterdeck' : 'You can go north, south, and west.',
+             "Port side, outside of The Bridge" : 'You can go north, south, and east.',
+             "Aft": "The back of the boat. There's beer cans all over the deck. Dan and Justin were found here. You can go east or west."}
 
 rooms = {
 
-            'The Bridge' : {
-                  'west' : 'Port side, outside of The Bridge',
-                  'east'  : 'Starboard side, outside of The Bridge',
-                  'room' : 'the bridge',
+            'Bridge' : {
+                  'west' : 'Port side, outside of the Bridge',
+                  'east'  : 'Starboard side, outside of the Bridge',
+                  'radio' : 'radio',
+                  'room' : 'bridge',
                   'clue'  : 'chad',
                 },
-            'The Quarterdeck' : {
-                  'east' : 'Starboard side, outside of The Quarterdeck',
+            'Quarterdeck' : {
+                  'east' : 'Starboard side, outside of the Quarterdeck',
+                  'room' : 'Quarterdeck',
+                  'north' : 'Quarterdeck cabin',
+                  'west' : 'Port side, outside of the Quarterdeck',
+                },
+            'Quarterdeck cabin' : {
+                  'south' : 'Quarterdeck',
                   'clue' : 'dead body',
-                  'west' : 'Port side, outside of The Quarterdeck',
+                  'room' : 'Quarterdeck cabin',
                 },
             'Bow' : {
-                  'west' : 'Port side, outside of The Bridge',
-                  'east'  : 'Starboard side, outside of The Bridge',
+                  'west' : 'Port side, outside of the Bridge',
+                  'room' : 'Bow',
+                  'clue' : 'nikk',
+                  'east' : 'Starboard side, outside of the Bridge',
                  },  
-            'Port side, outside of The Bridge' : {
+            'Port side, outside of the Bridge' : {
                   'north' : 'Bow',
-                  'south' : 'Port side, outside of The Quarterdeck',
-                  'east' : 'The Bridge',
-                  'clue'  : 'travis',
+                  'room' : 'Port side, outside of the Bridge',
+                  'south' : 'Port side, outside of the Quarterdeck',
+                  'east' : 'Bridge',
                 },
-            'Starboard side, outside of The Bridge' : {
-                  'west' : 'Hall',
-                  'south': 'Starboard side, outside of The Quarterdeck',
-                  'clue' : 'bill',
+            'Starboard side, outside of the Bridge' : {
+                  'west' : 'Bridge',
+                  'room' : 'Starboard side, outside of the Bridge',
+                  'south': 'Starboard side, outside of the Quarterdeck',
+                  'clue' : 'bai',
                   'north' : 'Bow',
                },
-            'Port side, outside of The Quarterdeck' : {
-                  'north' : 'Port side, outside of The Bridge',
+            'Port side, outside of the Quarterdeck' : {
+                  'north' : 'Port side, outside of the Bridge',
+                  'room' : 'Port side, outside of the Quarterdeck',
                   'south' : 'Aft',
-                  'east' : 'The Quarterdeck',
+                  'east' : 'Quarterdeck',
                },
-            'Starboard side, outside of The Quarterdeck' : {
-                  'north' : 'Starboard side, outside of The Bridge',
+            'Starboard side, outside of the Quarterdeck' : {
+                  'north' : 'Starboard side, outside of the Bridge',
+                  'room' : 'Starboard side, outside of the Quarterdeck',
                   'south' : 'Aft',
-                  'west' : 'The Quarterdeck',
+                  'west' : 'Quarterdeck',
                   },   
             'Aft' : {
-                  'west' : 'Port side, outside of The Quarterdeck',
-                  'east' : 'Starboard side, outside of The Quarterdeck',
-                  'clue' : 'frank',
+                  'west' : 'Port side, outside of the Quarterdeck',
+                  'east' : 'Starboard side, outside of the Quarterdeck',
+                  'room' : 'Aft',
+                  'clue' : 'dan',
+                  'clue' : 'justin',
             }
          }
 
 #start the player in the Hall
-currentRoom = 'The Bridge'
+currentRoom = 'Bridge'
 
 showInstructions()
 
@@ -136,15 +163,19 @@ while True:
       #delete the item from the room
       del rooms[currentRoom]['clue']
 
-  
+  #if person is in room they can investigate they put it in room_discription
   if move[0] == 'investigate' :
-    if "room" in rooms[currentRoom] and move[1] in rooms[currentRoom]['room']:
-      room_discriptions += [move[1]]
-      print(move[1] + ' was investigated!')
-      del rooms[currentRoom]['room']
+      if "room" in rooms[currentRoom]:
+        room_discriptions += [move[1]]
+        print(move[1] + ' was investigated!')
+        del rooms[currentRoom]['room']
 
-  ## Define how a player can win
-  if currentRoom == 'Aft' and 'key' in alibis and 'potion' in alibis:
-    print('You escaped the house with the ultra rare key and magic potion... YOU WIN!')
-    break
-
+  if move[0] == 'radio' :
+      if "radio" in rooms[currentRoom]:
+        print(move[0] + ' operator asks who you think did it?')
+        guess = input('>')
+        if guess == 'chad' :
+              print(guess + ' did it! When he hears you say his name to the opoerator, he gives up and comes clean. He was jealous of her skillz at codeing. Then he started quoteing Highlander as the cops take him away. GAME OVER, CONGRATES!')
+        else:
+            print(guess + ' didn\'t do it! I did Chad. He plunges a knife into your neck. As you drop he thanks you for getting the cops off his tail with the wrong accusation. GAME OVER!')
+            break
